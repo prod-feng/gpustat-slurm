@@ -42,7 +42,7 @@ foreach $node (@nodes)
     # Init allocated res info.
     my @res=(0,0); my @cpu=(0,0); my @mem=(0,0);my @gpu=(0,0);
     #the hotest GPU's temporature
-    my $temp = 0;
+    my $temp = 0; my $memalloc=0;
     if (defined $alloc[1] and length $alloc[1]){
        # 
        @res=split(/,/,$alloc[1]);

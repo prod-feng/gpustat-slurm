@@ -48,8 +48,16 @@ foreach $node (@nodes)
        @res=split(/,/,$alloc[1]);
        @cpu=split(/=/,$res[0]);
        @mem=split(/=/,$res[1]);
-       chop($mem[1]); #remove trailing M char.
-       $memalloc = $mem[1]/1000;#convert from MB to GB.
+
+       if(index($mem[1], "M") != -1) {
+          chop($mem[1]); #remove trailing M char.
+          $memalloc = int($mem[1]/1000);#convert from MB to GB.
+       }
+       elsif (index($mem[1], "G") != -1) {
+           chop($mem[1]); #remove trailing G char.
+           $memalloc = int($mem[1]);
+       }
+       #TB RAM?
        @gpu=split(/=/,$res[2]);
     }
     #my @aaa = split(/ ;  /,$gpuinfo[1],2);

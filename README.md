@@ -5,6 +5,7 @@ A quick perl script to check GPU nodes information.
 Rocky Linux 9.
 
 Slurm, perl, pdsh needed. Need to enable SSH direct login to gpu nodes. pdsh here used to get GPU's temporature.
+Now allow "root" user to get the temporature info, needs ssh, so.
 
 The output of this script is as following:
 

@@ -9,8 +9,16 @@ use File::Basename;
 #sorted already, so the first gpu of a node in the array is the hotest one.
 #chage here fit your gpu nodes
 my $gpunodes= "node[001-012,018,019]";
-my @gpuinfo=`pdsh -w $gpunodes nvidia-smi   --query-gpu=gpu_name,gpu_bus_id,temperature.gpu,memory.used,utilization.gpu,utilization.memory --format=csv,noheader|awk -F "," '{split(\$1,node,":"); print node[1] " ; "\$3}'|sort -r`;;
-
+my $username=`whoami`;
+chomp($username);
+my @gpuinfo;
+if ($username eq 'root'){
+  print "Work in root user mode:\n";
+    @gpuinfo=`pdsh -w $gpunodes nvidia-smi   --query-gpu=gpu_name,gpu_bus_id,temperature.gpu,memory.used,utilization.gpu,utilization.memory --format=csv,noheader|awk -F "," '{split(\$1,node,":"); print node[1] " ; "\$3}'|sort -r`;;
+}else {
+   print "Work as user: $username.\n";
+   @gpuinfo=("node00;0");
+}
 #Get GPU nodes. Should ignore CPU nodes now.
 
 my @nodes=`sinfo -a --Node -o "%.10N %8O %c %.10m %.10e  %.6t  %G"|uniq|grep -v -e down|grep gpu`;;

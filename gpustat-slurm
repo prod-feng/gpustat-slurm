@@ -73,7 +73,7 @@ foreach $node (@nodes)
     #Now find out the temporature of hotest GPU in the node. Sorted already, the first one in the array is the hotest.
     foreach $line  (@gpuinfo)
     {
-      my @gtemp=split(/ ;  /,$line); 
+      my @gtemp=split(/ ;  /,$line); # format: node001; 78
       # 
       if ($gtemp[0] eq $vals[1]){ #  is this node the one we are working on? $vals[1] = nodename
          $temp=$gtemp[1];

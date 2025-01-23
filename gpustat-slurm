@@ -75,7 +75,7 @@ foreach $node (@nodes)
     {
       my @gtemp=split(/ ;  /,$line); 
       # 
-      if ($gtemp[0] eq $vals[1]){
+      if ($gtemp[0] eq $vals[1]){ #  is this node the one we are working on? $vals[1] = nodename
          $temp=$gtemp[1];
 	 chomp($temp);
 	 last; # Found the first/hotest GPU.

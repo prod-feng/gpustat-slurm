@@ -67,17 +67,18 @@ foreach $node (@nodes)
            $memalloc = int($mem[1]);
        }
        #TB RAM?
+       #
        @gpu=split(/=/,$res[2]);
     }
-    #my @aaa = split(/ ;  /,$gpuinfo[1],2);
+    #Now find out the temporature of hotest GPU in the node. Sorted already, the first one in the array is the hotest.
     foreach $line  (@gpuinfo)
     {
       my @gtemp=split(/ ;  /,$line); 
       # 
       if ($gtemp[0] eq $vals[1]){
-        $temp=$gtemp[1];
-	      chomp($temp);
-	      last;
+         $temp=$gtemp[1];
+	 chomp($temp);
+	 last; # Found the first/hotest GPU.
       }
     }
     # @vals array:  NODELIST CPU_LOAD CPUS     MEMORY   FREE_MEM   STATE  GRES

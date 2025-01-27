@@ -68,7 +68,7 @@ foreach $node (@nodes)
        }
        #TB RAM?
        #
-       @gpu=split(/=/,$res[2]);
+       if (defined $res[2] and length $res[2]) { @gpu=split(/=/,$res[2]);} #for hybrid partition, CPU/GPU on a single node.
     }
     #Now find out the temporature of hotest GPU in the node. Sorted already, the first one in the array is the hotest.
     foreach $line  (@gpuinfo)

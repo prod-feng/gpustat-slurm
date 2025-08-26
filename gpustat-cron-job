@@ -16,7 +16,9 @@ chomp($username);
 ##print "User: ", $gpunodes;
 my @gpuinfo;
 if ($username eq 'root'   ){
-    @gpuinfo=`pdsh -w $gpunodes nvidia-smi   --query-gpu=gpu_name,gpu_bus_id,temperature.gpu,memory.used,utilization.gpu,utilization.memory --format=csv,noheader|awk -F "," '{split(\$1,node,":"); split(\$5,gpu,"%");split(\$6,gmem,"%"); print node[1]";"\$3";"gpu[1]";"gmem[1]}' |sort  -k1 `;;
+    @gpuinfo=`pdsh -w $gpunodes nvidia-smi   --query-gpu=gpu_name,gpu_bus_id,temperature.gpu,memory.used,utilization.gpu,utilization.memory --format=csv,noheader|awk -F "," '{split(\$1,node,":"); split(\$5,gpu,"%");split(\$4,gmem,"MiB"); print node[1]";"\$3";"gpu[1]";"gmem[1]  / 1437.71}' |sort  -k1 `;;  
+  # Use mem.used, 1437.71, H200 memory
+    #@gpuinfo=`pdsh -w $gpunodes nvidia-smi   --query-gpu=gpu_name,gpu_bus_id,temperature.gpu,memory.used,utilization.gpu,utilization.memory --format=csv,noheader|awk -F "," '{split(\$1,node,":"); split(\$5,gpu,"%");split(\$6,gmem,"%"); print node[1]";"\$3";"gpu[1]";"gmem[1]}' |sort  -k1 `;;
 }else {
    print "Work as user: $username. Get the average during the last 2 minutes\n";
    #
@@ -37,10 +39,11 @@ foreach $node (@nodes)
 {
   my $found=0;
   chomp($node);
- 
+  $node=' '.$node;
 
   my @vals=split(/\s+/,$node);
-   
+  #
+  #$node, $load, $cpus, $memtot,$memfree,$state,$gres
   if ($vals[4] eq "N/A") {
       $vals[4]=0;
   }
@@ -55,8 +58,8 @@ foreach $node (@nodes)
   $vals[4]=int($vals[4]/1000); #Convert from MB to GB
   $vals[5]=int($vals[5]/1000); #Convert from MB to GB
 
- # You may need absolute path for the comand
-  my @computes=`scontrol show node $vals[1]|grep AllocTRES`;;
+  #
+  my @computes=`/cm/shared/apps/slurm/current/bin/scontrol show node $vals[1]|grep AllocTRES`;;
   #print join("",@computes);
   foreach $comp (@computes)
   {
@@ -101,9 +104,10 @@ foreach $node (@nodes)
     if($gpu[1] > 0){  # direct ssh user?
 	# $gpu[1]=0.01;
         $gusg=$gusg/$gpu[1];
-        $gram=$gram/$gpu[1];
+	#$gram=$gram/$gpu[1];
     }
-     printf("%10s  %3d %4d  %6s %6.2f %5d/%2d   %3s/%3s/%3s %6s %3s/%-22s\n",$vals[1],$gusg,$gram,$temp,$vals[2],$cpu[1],$vals[3],$memalloc,$vals[5],$vals[4],$vals[6],$gpu[1],$vals[7])
+    #    printf("%10s %6.2f %5d/%2d   %3s/%3s/%3s %6s %3s/%-22s  %3s %5d %5d\n",$vals[1],$vals[2],$cpu[1],$vals[3],$memalloc,$vals[5],$vals[4],$vals[6],$gpu[1],$vals[7],$temp,$gusg,$gram)
+    printf("%10s  %3d %4d  %6s %6.2f %5d/%3d   %3s/%3s/%4s %6s %3s/%-22s\n",$vals[1],$gusg,$gram,$temp,$vals[2],$cpu[1],$vals[3],$memalloc,$vals[5],$vals[4],$vals[6],$gpu[1],$vals[7])
 
   }
 }

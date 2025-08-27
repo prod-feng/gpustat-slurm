@@ -7,6 +7,13 @@ Rocky Linux 9.
 Slurm, perl, pdsh needed. Need to enable SSH direct login to gpu nodes. pdsh here used to get GPU's temporature.
 Now allow "root" user to get the temporature info, needs ssh, so.
 
+## gpustat-cron-job
+
+Most HPC clusters blocks SSH direct login to compute nodes, the alternative way to let all users to run this command is to 
+set a cron job as a previleged user to run and produce output to a file, the all other users can run the same command to read from this file.
+ 
+
+
 The output of this script is as following:
 
 ```
